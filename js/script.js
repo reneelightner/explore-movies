@@ -42,7 +42,7 @@ $(document).ready(function () {
 				// define width, height with the margin
 				this.margin = {
 					top: 5,
-					right: 10,
+					right: 15,
 					bottom: 20,
 					left: 40
 				};
@@ -105,7 +105,7 @@ $(document).ready(function () {
 
 				var circlesData = [];
 
-				if (this.genres !== allGenres) {
+				if (this.genres !== 'all') {
 					this.data.forEach(function (y) {
 						var hasgenre = y.genres.find(function (x) {
 							return x === _this.genres;
@@ -168,7 +168,7 @@ $(document).ready(function () {
 		}
 
 		$(".genres-buttons button.btn").on("click", function () {
-			$("button.btn").removeClass('btn-primary');
+			$(".genres-buttons button.btn").removeClass('btn-primary');
 			$(this).addClass('btn-primary');
 			var theGenreClicked = $(this).attr('genre');
 			testMovieViz.genres = theGenreClicked;
@@ -176,6 +176,8 @@ $(document).ready(function () {
 		});
 
 		$(".xaxis-buttons button.btn").on("click", function () {
+			$(".xaxis-buttons button.btn").removeClass('btn-primary');
+			$(this).addClass('btn-primary');
 			var thexAxisClicked = $(this).attr('xaxis');
 			testMovieViz.xScaleType = thexAxisClicked;
 			testMovieViz.xDomain = thexAxisClicked == 'votes' ? votesDomain : yearsDomain;
@@ -208,7 +210,7 @@ $(document).ready(function () {
 			xScaleType: 'year', // or 'votes'
 			yDomain: [1, 10],
 			chartHeight: 350,
-			genres: 'mystery'
+			genres: 'all'
 		});
 		//make the buttons and add their click listener
 		makeButtons(allGenres);
