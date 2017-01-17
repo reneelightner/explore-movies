@@ -6,7 +6,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 $(document).ready(function () {
 
+	//GLOBAL variables
 	var dateStrToYear = d3.time.format("%Y").parse;
+	var yearsDomain, votesDomain, allGenres;
 
 	//Load JSON-encoded data using a GET HTTP request
 	function getData(url) {
@@ -19,9 +21,11 @@ $(document).ready(function () {
 		function MovieViz(opts) {
 			_classCallCheck(this, MovieViz);
 
-			this.data = opts.data;
 			this.element = opts.element;
+			this.data = opts.data;
 			this.xDomain = opts.xDomain;
+			this.xScaleType = opts.xScaleType;
+			this.yDomain = opts.yDomain;
 			this.chartHeight = opts.chartHeight;
 			this.genres = opts.genres;
 
@@ -37,9 +41,9 @@ $(document).ready(function () {
 				// define width, height with the margin
 				this.margin = {
 					top: 5,
-					right: 20,
+					right: 10,
 					bottom: 20,
-					left: 20
+					left: 40
 				};
 				this.width = this.chartWidth - this.margin.left - this.margin.right;
 				this.height = this.chartHeight - this.margin.top - this.margin.bottom;
@@ -52,6 +56,81 @@ $(document).ready(function () {
 
 				// we'll actually be appending to a <g class='baseGroup'> element
 				this.baseGroup = svg.append('g').attr("class", "baseGroup").attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
+				this.baseGroup.append("text").text("Rating").style("text-anchor", "middle").attr("dx", this.height / 2 * -1).attr("dy", "-30").attr("transform", "rotate(-90)");;
+
+				// create the other stuff
+				this.createYaxis();
+				this.createXaxis();
+				this.createCircles();
+			}
+		}, {
+			key: 'createYaxis',
+			value: function createYaxis() {
+				//y scale to be used in y axis
+				this.yScale = d3.scale.linear().range([this.height, 0]).domain(this.yDomain);
+
+				// create axis element
+				var yAxis = d3.svg.axis().scale(this.yScale).tickSize(-this.width).orient("left");
+
+				//add the y axis to the main chart
+				this.baseGroup.append("g").attr("class", "y axis").call(yAxis);
+			}
+		}, {
+			key: 'createXaxis',
+			value: function createXaxis() {
+
+				d3.select("g.x.axis").remove();
+
+				// x scale to be used in x axis
+				if (this.xScaleType == 'year') {
+					this.xScale = d3.time.scale().range([0, this.width]).domain(this.xDomain);
+				} else {
+					this.xScale = d3.scale.linear().range([0, this.width]).domain(this.xDomain);
+				}
+
+				// create axis element
+				var xAxis = d3.svg.axis().scale(this.xScale).orient("bottom");
+
+				// add the x axis to the chart
+				this.baseGroup.append("g").attr("class", "x axis").attr("transform", "translate(0," + this.height + ")").call(xAxis);
+			}
+		}, {
+			key: 'createCircles',
+			value: function createCircles() {
+				var _this = this;
+
+				d3.selectAll("circle.movie-circle").remove();
+
+				var circlesData = [];
+
+				if (this.genres !== allGenres) {
+					this.data.forEach(function (y) {
+						var hasgenre = y.genres.find(function (x) {
+							return x === _this.genres;
+						});
+						if (hasgenre) {
+							circlesData.push(y);
+						}
+					});
+				} else {
+					circlesData = this.data;
+				}
+
+				this.baseGroup.selectAll("circle").data(circlesData).enter().append("circle").attr("class", "movie-circle").attr("genre", this.genres).attr("cy", function (d) {
+					return _this.yScale(d.rating);
+				}).attr("cx", function (d) {
+					return _this.xScale(d[_this.xScaleType]);
+				}).attr("r", 5);
+			}
+		}, {
+			key: 'moveCircles',
+			value: function moveCircles() {
+				var _this2 = this;
+
+				d3.selectAll("circle.movie-circle").transition().duration(1000).attr("cx", function (d) {
+					return _this2.xScale(d[_this2.xScaleType]);
+				});
 			}
 		}]);
 
@@ -59,20 +138,40 @@ $(document).ready(function () {
 	}();
 
 	getData('./admin/movies.json')
-	//then() method takes to params: callback functions for the success and failure cases of the Promise
+	// then() method takes to params: callback functions for the success and failure cases of the Promise
 	.then(function (data) {
-		//add the total number of movies
+		// years get parse into data objects for d3.js
+		// turn voes and ratings to numbers from strings
+		data.movies.forEach(function (obj) {
+			obj.year = dateStrToYear(obj.year);
+			obj.rating = +obj.rating;
+			obj.votes = +obj.votes;
+		});
+		console.log(data);
+		// add the total number of movies to the dek
 		$(".dek span").html(data.movies.length);
-
+		// assign these global variables
+		yearsDomain = [dateStrToYear(data.yearRange[0].toString()), dateStrToYear(data.yearRange[1].toString())];
+		votesDomain = data.votesRange;
+		allGenres = data.genres;
+		// create a new data viz object
 		var testMovieViz = new MovieViz({
 			element: document.querySelector('#viz'),
 			data: data.movies,
-			xDomain: [1, 3.5],
-			chartHeight: 400,
-			genres: 'all'
+			xDomain: yearsDomain, // or votesDomain
+			xScaleType: 'year', // or 'votes'
+			yDomain: [1, 10],
+			chartHeight: 350,
+			genres: 'mystery'
 		});
 
-		console.log(data);
+		testMovieViz.genres = 'comedy';
+		testMovieViz.createCircles();
+
+		testMovieViz.xScaleType = 'votes';
+		testMovieViz.xDomain = votesDomain;
+		testMovieViz.createXaxis();
+		testMovieViz.moveCircles();
 	});
 });
 
