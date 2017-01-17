@@ -2,34 +2,43 @@
 .btn-group {
   margin-bottom: 25px;
 }
+/* line 4, ../sass/style.scss */
+.btn-group.genres-buttons .btn {
+  text-transform: capitalize;
+}
 
-/* line 7, ../sass/style.scss */
+/* line 12, ../sass/style.scss */
 svg .axis path {
   display: none;
 }
-/* line 11, ../sass/style.scss */
+/* line 16, ../sass/style.scss */
 svg .axis .tick line {
   stroke: #ccc;
   opacity: 0.8;
 }
-/* line 15, ../sass/style.scss */
+/* line 20, ../sass/style.scss */
 svg .axis .tick text {
   font-size: 10px;
   font-weight: 600;
 }
-/* line 20, ../sass/style.scss */
+/* line 25, ../sass/style.scss */
 svg .axis .tick.zero-tick line {
   stroke: #000;
   opacity: 1;
 }
-/* line 28, ../sass/style.scss */
+/* line 33, ../sass/style.scss */
 svg .hover-text {
   pointer-events: none;
+  text-transform: capitalize;
 }
-/* line 32, ../sass/style.scss */
+/* line 38, ../sass/style.scss */
 svg circle {
-  fill: #52a045;
+  fill: #a2d292;
   cursor: pointer;
   stroke: #fff;
   stroke-width: 1px;
+}
+/* line 43, ../sass/style.scss */
+svg circle.selected {
+  fill: #52a045;
 }

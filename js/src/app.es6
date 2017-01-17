@@ -133,6 +133,9 @@ $( document ).ready(() => {
 			}
 
 			var mouseover = (circleIndex) => {
+				d3.selectAll("circle.movie-circle").classed("selected", false);
+				d3.select("circle.movie-circle[key='"+circlesData[circleIndex].key+"']").classed("selected", true);
+
 				d3.select("text.hover-text")
 					.attr("opacity", 1)
 					.text(circlesData[circleIndex].title)
@@ -141,6 +144,8 @@ $( document ).ready(() => {
 			};
 
 			var mouseout = (circleIndex) => {
+				d3.selectAll("circle.movie-circle").classed("selected", false);
+				
 				d3.select("text.hover-text")
 					.attr("opacity", 0);
 			};
@@ -151,7 +156,7 @@ $( document ).ready(() => {
 		        .enter()
 		        .append("circle")
 		        .attr("class", "movie-circle") 
-		        .attr("genre", this.genres)
+		        .attr("key", d => d.key)
 		        .attr("cy", d =>  this.yScale(d.rating)  )
 		        .attr("cx", d => this.xScale(d[this.xScaleType])  )
 		        .attr("r", 5)

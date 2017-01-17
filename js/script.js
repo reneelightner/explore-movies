@@ -122,6 +122,9 @@ $(document).ready(function () {
 				}
 
 				var mouseover = function mouseover(circleIndex) {
+					d3.selectAll("circle.movie-circle").classed("selected", false);
+					d3.select("circle.movie-circle[key='" + circlesData[circleIndex].key + "']").classed("selected", true);
+
 					d3.select("text.hover-text").attr("opacity", 1).text(circlesData[circleIndex].title).attr("dx", function () {
 						return _this.xScale(circlesData[circleIndex][_this.xScaleType]) + 5;
 					}).attr("dy", function () {
@@ -130,11 +133,15 @@ $(document).ready(function () {
 				};
 
 				var mouseout = function mouseout(circleIndex) {
+					d3.selectAll("circle.movie-circle").classed("selected", false);
+
 					d3.select("text.hover-text").attr("opacity", 0);
 				};
 
 				// add circles
-				this.baseGroup.selectAll("circle").data(circlesData).enter().append("circle").attr("class", "movie-circle").attr("genre", this.genres).attr("cy", function (d) {
+				this.baseGroup.selectAll("circle").data(circlesData).enter().append("circle").attr("class", "movie-circle").attr("key", function (d) {
+					return d.key;
+				}).attr("cy", function (d) {
 					return _this.yScale(d.rating);
 				}).attr("cx", function (d) {
 					return _this.xScale(d[_this.xScaleType]);

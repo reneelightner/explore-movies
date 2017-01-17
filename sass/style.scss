@@ -1,5 +1,10 @@
 .btn-group{
 	margin-bottom: 25px;
+	&.genres-buttons{
+		.btn{
+			text-transform: capitalize;
+		}
+	}
 }
 
 svg{
@@ -27,12 +32,18 @@ svg{
 
 	.hover-text{
 		pointer-events: none;
+		text-transform: capitalize;
 	}
 	
 	circle{
-		fill: #52a045;
+		fill: #a2d292;
 		cursor: pointer;
 		stroke: #fff;
 		stroke-width: 1px;
+		&.selected{
+			fill: #52a045;
+		}
 	}
+
+
 }
