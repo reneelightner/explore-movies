@@ -24,6 +24,10 @@ svg{
 			}
 		}
 	} 
+
+	.hover-text{
+		pointer-events: none;
+	}
 	
 	circle{
 		fill: #52a045;

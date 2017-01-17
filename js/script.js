@@ -42,7 +42,7 @@ $(document).ready(function () {
 				// define width, height with the margin
 				this.margin = {
 					top: 5,
-					right: 50,
+					right: 150,
 					bottom: 20,
 					left: 40
 				};

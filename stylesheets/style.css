@@ -23,6 +23,10 @@ svg .axis .tick.zero-tick line {
   opacity: 1;
 }
 /* line 28, ../sass/style.scss */
+svg .hover-text {
+  pointer-events: none;
+}
+/* line 32, ../sass/style.scss */
 svg circle {
   fill: #52a045;
   cursor: pointer;
