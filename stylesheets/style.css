@@ -1,0 +1,26 @@
+/* line 5, ../sass/style.scss */
+svg .axis path {
+  display: none;
+}
+/* line 9, ../sass/style.scss */
+svg .axis .tick line {
+  stroke: #ccc;
+  opacity: 0.8;
+}
+/* line 13, ../sass/style.scss */
+svg .axis .tick text {
+  font-size: 10px;
+  font-weight: 600;
+}
+/* line 18, ../sass/style.scss */
+svg .axis .tick.zero-tick line {
+  stroke: #000;
+  opacity: 1;
+}
+/* line 25, ../sass/style.scss */
+svg circle {
+  fill: #52a045;
+  cursor: pointer;
+  stroke: #fff;
+  stroke-width: 1px;
+}

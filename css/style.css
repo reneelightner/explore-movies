@@ -1,0 +1,37 @@
+form label {
+  margin-left: 15px; }
+  form label input[type=radio] {
+    margin-right: 3px; }
+
+#viz {
+  margin-bottom: 50px; }
+  #viz svg .baseGroup path {
+    display: none; }
+  #viz svg .baseGroup .tick line {
+    fill: none;
+    stroke: #999;
+    shape-rendering: crispEdges; }
+  #viz svg .baseGroup circle{
+    cursor: pointer;
+  }
+  #viz svg .baseGroup path.line {
+    display: block;
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1px;
+    opacity: 0.3; }
+
+.circle-max span {color: #8b0000;}
+.circle-min span {color: #99cc99;}
+
+div.tooltip { 
+    position: absolute;        
+    padding: 5px;       
+    font: 12px sans-serif;   
+    background-color: #ccc; 
+    border: 0px;    
+    border-radius: 8px;     
+    pointer-events: none;     
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,31 @@
+
+
+svg{
+	.axis{
+		path{
+			display: none;
+		}
+		.tick{
+			line{
+				stroke: #ccc;
+				opacity: 0.8;
+			}
+			text{
+				font-size: 10px;
+				font-weight: 600;
+			}
+			&.zero-tick{
+				line{
+					stroke: #000;
+					opacity: 1;
+				}
+			}
+		}
+	} 
+	circle{
+		fill: #52a045;
+		cursor: pointer;
+		stroke: #fff;
+		stroke-width: 1px;
+	}
+}
