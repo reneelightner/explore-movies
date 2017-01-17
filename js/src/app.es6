@@ -10,7 +10,7 @@ $( document ).ready(() => {
       	return $.getJSON(url); 
     }
 
-    //Class declaration
+    //Class declaration for a visualization instance
 	class MovieViz {
 
 	    constructor(opts) {
@@ -32,7 +32,7 @@ $( document ).ready(() => {
 	        // define width, height with the margin
 	        this.margin = {
 	            top: 5,
-	            right: 15,
+	            right: 50,
 	            bottom: 20,
 	            left: 40
 	        };
@@ -51,12 +51,13 @@ $( document ).ready(() => {
 	          .attr("class", "baseGroup")
 	          .attr('transform','translate('+this.margin.left+','+this.margin.top+')');
 
+	        // 'rating' label
 	        this.baseGroup.append("text")
 	        	.text("IMDB Rating")
 	        	.style("text-anchor", "middle")
      			.attr("dx", (this.height/2)*-1)
      			.attr("dy", "-30")
-	        	.attr("transform", "rotate(-90)");;
+	        	.attr("transform", "rotate(-90)");
 
 	        // create the other stuff
 		    this.createYaxis();
@@ -65,7 +66,7 @@ $( document ).ready(() => {
 		}
 
 		createYaxis () {
-			//y scale to be used in y axis
+			// y scale to be used in y axis
         	this.yScale = d3.scale.linear()
             	.range([this.height, 0])
             	.domain(this.yDomain);
@@ -76,7 +77,7 @@ $( document ).ready(() => {
 	            .tickSize(-this.width)
 	            .orient("left");
 
-	        //add the y axis to the main chart
+	        // add the y axis to the main chart
 	        this.baseGroup
 	          	.append("g")
 	          	.attr("class", "y axis")
@@ -114,10 +115,12 @@ $( document ).ready(() => {
 
 		createCircles() {
 
+			// remove all previous circles and hover text
 			d3.selectAll("circle.movie-circle").remove();
+			d3.select("text.hover-text").remove();
 
+			//filter the circle data
 			var circlesData = [];
-
 			if(this.genres !== 'all'){
 				this.data.forEach(y => {
 					var hasgenre = y.genres.find(x => x === this.genres);
@@ -129,6 +132,20 @@ $( document ).ready(() => {
 				circlesData = this.data;
 			}
 
+			var mouseover = (circleIndex) => {
+				d3.select("text.hover-text")
+					.attr("opacity", 1)
+					.text(circlesData[circleIndex].title)
+					.attr("dx", () => this.xScale(circlesData[circleIndex][this.xScaleType])+5)
+					.attr("dy", () => this.yScale(circlesData[circleIndex].rating));
+			};
+
+			var mouseout = (circleIndex) => {
+				d3.select("text.hover-text")
+					.attr("opacity", 0);
+			};
+
+			// add circles
 			this.baseGroup.selectAll("circle")
 		        .data(circlesData)
 		        .enter()
@@ -137,12 +154,17 @@ $( document ).ready(() => {
 		        .attr("genre", this.genres)
 		        .attr("cy", d =>  this.yScale(d.rating)  )
 		        .attr("cx", d => this.xScale(d[this.xScaleType])  )
-		        .attr("r", 5);
+		        .attr("r", 5)
+		        .on("mouseover", (d,i) => mouseover(i))
+		        .on("mouseout", (d,i) => mouseout(i));
 
+		    this.baseGroup.append("text")
+	        	.attr("class", "hover-text");    
 		}
 
 		moveCircles(){
 
+			// move circles to their new position according to the new x axis/scale
 			d3.selectAll("circle.movie-circle")
 				.transition()
 				.duration(1000)
@@ -150,6 +172,7 @@ $( document ).ready(() => {
 		}
 	}
 
+	// adding buttons/listeners for filterign by genre and adjusting the x-axis
 	function makeButtons(genres){
 
 		$(".genres-buttons").append("<button class='btn btn-default btn-primary btn-xs' genre='all'>ALL</button>");
@@ -181,7 +204,7 @@ $( document ).ready(() => {
 
 	getData('./admin/movies.json')
     // then() method takes to params: callback functions for the success and failure cases of the Promise
-    .then(function(data) {
+    .then((data) => {
     	// years get parse into data objects for d3.js
     	// turn voes and ratings to numbers from strings
     	data.movies.forEach(obj => {
@@ -205,9 +228,9 @@ $( document ).ready(() => {
 			chartHeight: 350,
 			genres: 'all'
 		});
-	    //make the buttons and add their click listener
+	    // make the buttons and add their click listener
 		makeButtons(allGenres);
-
     });
+
 });
 

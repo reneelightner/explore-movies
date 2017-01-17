@@ -16,7 +16,7 @@ $(document).ready(function () {
 		return $.getJSON(url);
 	}
 
-	//Class declaration
+	//Class declaration for a visualization instance
 
 	var MovieViz = function () {
 		function MovieViz(opts) {
@@ -42,7 +42,7 @@ $(document).ready(function () {
 				// define width, height with the margin
 				this.margin = {
 					top: 5,
-					right: 15,
+					right: 50,
 					bottom: 20,
 					left: 40
 				};
@@ -58,7 +58,8 @@ $(document).ready(function () {
 				// we'll actually be appending to a <g class='baseGroup'> element
 				this.baseGroup = svg.append('g').attr("class", "baseGroup").attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
-				this.baseGroup.append("text").text("IMDB Rating").style("text-anchor", "middle").attr("dx", this.height / 2 * -1).attr("dy", "-30").attr("transform", "rotate(-90)");;
+				// 'rating' label
+				this.baseGroup.append("text").text("IMDB Rating").style("text-anchor", "middle").attr("dx", this.height / 2 * -1).attr("dy", "-30").attr("transform", "rotate(-90)");
 
 				// create the other stuff
 				this.createYaxis();
@@ -68,13 +69,13 @@ $(document).ready(function () {
 		}, {
 			key: 'createYaxis',
 			value: function createYaxis() {
-				//y scale to be used in y axis
+				// y scale to be used in y axis
 				this.yScale = d3.scale.linear().range([this.height, 0]).domain(this.yDomain);
 
 				// create axis element
 				var yAxis = d3.svg.axis().scale(this.yScale).tickSize(-this.width).orient("left");
 
-				//add the y axis to the main chart
+				// add the y axis to the main chart
 				this.baseGroup.append("g").attr("class", "y axis").call(yAxis);
 			}
 		}, {
@@ -101,10 +102,12 @@ $(document).ready(function () {
 			value: function createCircles() {
 				var _this = this;
 
+				// remove all previous circles and hover text
 				d3.selectAll("circle.movie-circle").remove();
+				d3.select("text.hover-text").remove();
 
+				//filter the circle data
 				var circlesData = [];
-
 				if (this.genres !== 'all') {
 					this.data.forEach(function (y) {
 						var hasgenre = y.genres.find(function (x) {
@@ -118,17 +121,37 @@ $(document).ready(function () {
 					circlesData = this.data;
 				}
 
+				var mouseover = function mouseover(circleIndex) {
+					d3.select("text.hover-text").attr("opacity", 1).text(circlesData[circleIndex].title).attr("dx", function () {
+						return _this.xScale(circlesData[circleIndex][_this.xScaleType]) + 5;
+					}).attr("dy", function () {
+						return _this.yScale(circlesData[circleIndex].rating);
+					});
+				};
+
+				var mouseout = function mouseout(circleIndex) {
+					d3.select("text.hover-text").attr("opacity", 0);
+				};
+
+				// add circles
 				this.baseGroup.selectAll("circle").data(circlesData).enter().append("circle").attr("class", "movie-circle").attr("genre", this.genres).attr("cy", function (d) {
 					return _this.yScale(d.rating);
 				}).attr("cx", function (d) {
 					return _this.xScale(d[_this.xScaleType]);
-				}).attr("r", 5);
+				}).attr("r", 5).on("mouseover", function (d, i) {
+					return mouseover(i);
+				}).on("mouseout", function (d, i) {
+					return mouseout(i);
+				});
+
+				this.baseGroup.append("text").attr("class", "hover-text");
 			}
 		}, {
 			key: 'moveCircles',
 			value: function moveCircles() {
 				var _this2 = this;
 
+				// move circles to their new position according to the new x axis/scale
 				d3.selectAll("circle.movie-circle").transition().duration(1000).attr("cx", function (d) {
 					return _this2.xScale(d[_this2.xScaleType]);
 				});
@@ -137,6 +160,9 @@ $(document).ready(function () {
 
 		return MovieViz;
 	}();
+
+	// adding buttons/listeners for filterign by genre and adjusting the x-axis
+
 
 	function makeButtons(genres) {
 
@@ -212,7 +238,7 @@ $(document).ready(function () {
 			chartHeight: 350,
 			genres: 'all'
 		});
-		//make the buttons and add their click listener
+		// make the buttons and add their click listener
 		makeButtons(allGenres);
 	});
 });
