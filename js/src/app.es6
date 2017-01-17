@@ -1,13 +1,13 @@
-$( document ).ready(function() {
+$( document ).ready(() => {
 
-	var dateStrToYear = d3.time.format("%Y").parse;
+	const dateStrToYear = d3.time.format("%Y").parse;
    
     //Load JSON-encoded data using a GET HTTP request
 	function getData(url) {
       	return $.getJSON(url); 
     }
 
-    getData('admin/movies.json')
+    getData('./admin/movies.json')
     	//then() method takes to params: callback functions for the success and failure cases of the Promise
       	.then(function(data) {
 	        //add the total number of movies
