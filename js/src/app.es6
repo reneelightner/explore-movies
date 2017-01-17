@@ -198,6 +198,7 @@ $( document ).ready(() => {
 		testMovieViz.xDomain = votesDomain;
 		testMovieViz.createXaxis();
 		testMovieViz.moveCircles();*/
+
     });
 });
 
