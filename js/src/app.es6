@@ -52,7 +52,7 @@ $( document ).ready(() => {
 	          .attr('transform','translate('+this.margin.left+','+this.margin.top+')');
 
 	        this.baseGroup.append("text")
-	        	.text("Rating")
+	        	.text("IMDB Rating")
 	        	.style("text-anchor", "middle")
      			.attr("dx", (this.height/2)*-1)
      			.attr("dy", "-30")
@@ -151,16 +151,27 @@ $( document ).ready(() => {
 	}
 
 	function makeButtons(genres){
-		$(".btn-group").append("<button class='btn btn-default btn-primary btn-xs' genre='all'>ALL</button>");
+
+		$(".genres-buttons").append("<button class='btn btn-default btn-primary btn-xs' genre='all'>ALL</button>");
+
 		for(let genre of genres){
-			$(".btn-group").append("<button class='btn btn-default btn-xs' genre="+genre+">"+genre+"</button>");
+			$(".genres-buttons").append("<button class='btn btn-default btn-xs' genre="+genre+">"+genre+"</button>");
 		}
-		$("button.btn").on("click", function(){
+
+		$(".genres-buttons button.btn").on("click", function(){
 			$("button.btn").removeClass('btn-primary');
 			$(this).addClass('btn-primary')
 			let theGenreClicked = $(this).attr('genre');
 			testMovieViz.genres = theGenreClicked;
 			testMovieViz.createCircles();
+		});
+
+		$(".xaxis-buttons button.btn").on("click", function(){
+			let thexAxisClicked = $(this).attr('xaxis');
+			testMovieViz.xScaleType = thexAxisClicked;
+			testMovieViz.xDomain = thexAxisClicked == 'votes' ? votesDomain : yearsDomain;
+			testMovieViz.createXaxis();
+			testMovieViz.moveCircles();
 		});
 	}
 
@@ -193,11 +204,6 @@ $( document ).ready(() => {
 		});
 	    //make the buttons and add their click listener
 		makeButtons(allGenres);
-
-/*		testMovieViz.xScaleType = 'votes';
-		testMovieViz.xDomain = votesDomain;
-		testMovieViz.createXaxis();
-		testMovieViz.moveCircles();*/
 
     });
 });

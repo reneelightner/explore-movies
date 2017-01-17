@@ -58,7 +58,7 @@ $(document).ready(function () {
 				// we'll actually be appending to a <g class='baseGroup'> element
 				this.baseGroup = svg.append('g').attr("class", "baseGroup").attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
-				this.baseGroup.append("text").text("Rating").style("text-anchor", "middle").attr("dx", this.height / 2 * -1).attr("dy", "-30").attr("transform", "rotate(-90)");;
+				this.baseGroup.append("text").text("IMDB Rating").style("text-anchor", "middle").attr("dx", this.height / 2 * -1).attr("dy", "-30").attr("transform", "rotate(-90)");;
 
 				// create the other stuff
 				this.createYaxis();
@@ -139,7 +139,9 @@ $(document).ready(function () {
 	}();
 
 	function makeButtons(genres) {
-		$(".btn-group").append("<button class='btn btn-default btn-primary btn-xs' genre='all'>ALL</button>");
+
+		$(".genres-buttons").append("<button class='btn btn-default btn-primary btn-xs' genre='all'>ALL</button>");
+
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
 		var _iteratorError = undefined;
@@ -148,7 +150,7 @@ $(document).ready(function () {
 			for (var _iterator = genres[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 				var genre = _step.value;
 
-				$(".btn-group").append("<button class='btn btn-default btn-xs' genre=" + genre + ">" + genre + "</button>");
+				$(".genres-buttons").append("<button class='btn btn-default btn-xs' genre=" + genre + ">" + genre + "</button>");
 			}
 		} catch (err) {
 			_didIteratorError = true;
@@ -165,12 +167,20 @@ $(document).ready(function () {
 			}
 		}
 
-		$("button.btn").on("click", function () {
+		$(".genres-buttons button.btn").on("click", function () {
 			$("button.btn").removeClass('btn-primary');
 			$(this).addClass('btn-primary');
 			var theGenreClicked = $(this).attr('genre');
 			testMovieViz.genres = theGenreClicked;
 			testMovieViz.createCircles();
+		});
+
+		$(".xaxis-buttons button.btn").on("click", function () {
+			var thexAxisClicked = $(this).attr('xaxis');
+			testMovieViz.xScaleType = thexAxisClicked;
+			testMovieViz.xDomain = thexAxisClicked == 'votes' ? votesDomain : yearsDomain;
+			testMovieViz.createXaxis();
+			testMovieViz.moveCircles();
 		});
 	}
 
@@ -202,11 +212,6 @@ $(document).ready(function () {
 		});
 		//make the buttons and add their click listener
 		makeButtons(allGenres);
-
-		/*		testMovieViz.xScaleType = 'votes';
-  		testMovieViz.xDomain = votesDomain;
-  		testMovieViz.createXaxis();
-  		testMovieViz.moveCircles();*/
 	});
 });
 
