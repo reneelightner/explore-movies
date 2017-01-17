@@ -17,7 +17,7 @@ svg .axis .tick.zero-tick line {
   stroke: #000;
   opacity: 1;
 }
-/* line 25, ../sass/style.scss */
+/* line 26, ../sass/style.scss */
 svg circle {
   fill: #52a045;
   cursor: pointer;
